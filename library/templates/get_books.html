@@ -1,0 +1,9 @@
+{% extends "main.html" %}
+{% block content %}
+	<table>
+	<th>books</th>
+	{% for i in fb %}
+	<tr> <td>{{i.title}} </td></tr>
+	{% endfor %}
+	</table>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-5">
+	<h5> Student Details : </h5>
+	<hr>
+	<div class="card card-body">
+		<table class="table table-sm">
+			<tr>
+				<th>Name</th>
+				<th>Roll Number</th>
+				<th>Studying</th>
+				<th>Branch</th>
+				<th>Pursuing Yr</th>
+			</tr>
+			{% for i in st %}
+			<tr>
+				<td> {{i.name}} </td>
+				<td>{{i.roll_num}}</td>
+				<td>{{i.studying}}</td>
+				<td>{{i.branch}}</td>
+				<td>{{i.pyr}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	</div>
+</div>	
+{% endblock %}
