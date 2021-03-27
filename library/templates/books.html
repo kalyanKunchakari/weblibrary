@@ -1,7 +1,28 @@
 {% extends "main.html" %}
 {% block content %}
-	<form action="" method="POST">
+<body>
+	<form action="" id="bookform" data-subcat-url="{% url 'ajax_load_subcat' %}" method="POST">
 		{% csrf_token %}
-		{{form}}
+		{{form.as_p}}
 		<input type="Submit" name="Submit">
+	</form>	
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$("#id_main_category").change(function() {
+	console.log("hi welcome")
+	url = $('#bookform').attr('data-subcat-url');
+	const maincat = $(this).val();
+	console.log(maincat);
+	$.ajax({
+		url: url,
+		data: {'main_cat': maincat},
+		success:function(data){
+			$('#id_sub_category').html(data);
+			}
+		});	
+});
+</script>
+</body>
 {% endblock %}
+
+	

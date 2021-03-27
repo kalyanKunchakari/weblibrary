@@ -7,8 +7,7 @@ class Student(models.Model):
                         ("Mtech", "Mtech")
                         )
     BRANCH = (
-                      ("CSE", "CSE"),
-                      ( "IT", "IT"),
+                      ("CSE & IT", "CSE & IT"),
                       ("ECE", "ECE"),
                       ("EEE", "EEE"),
                       ("Mech", "Mech"),
@@ -47,8 +46,8 @@ class Book(models.Model):
     title = models.CharField(max_length=30, null=True)
     author = models.ForeignKey(Author,  on_delete=models.SET_NULL, null=True)
     summary = models.CharField(max_length=200, null=True)
-    main_category = models.ForeignKey(BookMainCategory, on_delete=models.CASCADE, null=True )
-    sub_category = models.ManyToManyField(BookSubCategory)
+    main_category = models.ForeignKey(BookMainCategory, on_delete=models.CASCADE, null=True)
+    sub_category = models.ForeignKey(BookSubCategory, on_delete=models.CASCADE, null=True)
  
     def __str__(self):
         return self.title
