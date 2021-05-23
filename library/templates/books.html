@@ -5,7 +5,17 @@
 		{% csrf_token %}
 		{{form.as_p}}
 		<input type="Submit" name="Submit">
-	</form>	
+	</form>
+	<div>
+		<span>
+			<table>
+	<th>books</th>
+	{% for i in fb %}
+	<tr> <td>{{i.title}} </td></tr>
+	{% endfor %}
+	</table>
+		</span>
+	</div>	
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 $("#id_main_category").change(function() {

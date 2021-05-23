@@ -1,0 +1,20 @@
+#logo{
+		}
+
+		body{
+			background-color: #ebeff5;
+		}
+
+
+		#UserTable{
+			background-color:  Orange;
+		}
+
+
+		#orders-delivered{
+			background-color: #7abecc;
+		}
+
+		#orders-pending{
+			background-color: #7CD1C0;
+		}
