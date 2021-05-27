@@ -47,10 +47,12 @@ def signup_form(request):
 
     if request.method == 'POST':
         form = SignupForm1(request.POST)
+
         if form.is_valid():
             rn = form.cleaned_data.get("rollNumber")
             un = form.cleaned_data.get("username")
-            #print(rn)
+            print(rn)
+            print(un)
             #print(StudentMainTable.objects.filter(stdid=rn))
                 #if StudentMainTable.objects.filter(stdid=rn).exists() :
                 #    if User.objects.filter(username=un).exists():

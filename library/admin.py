@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from .models import *
 # Register your models here.
-'''
+
 class StudentInline(admin.StackedInline):
     model = Student
     can_delete = False
@@ -17,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
         if not obj:
             return list()
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
-'''
+
 #admin.site.register(User)
 #admin.site.register(User, CustomUserAdmin)
 admin.site.register(Author)

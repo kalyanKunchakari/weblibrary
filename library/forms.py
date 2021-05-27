@@ -26,11 +26,11 @@ class BookForm(ModelForm):
         if 'main_category' in self.data:
             try:
                 main_category_id = int(self.data.get('main_category'))
-                self.fields['sub_category'].queryset = BookSubCategory.objects.filter(main_category_id=main_category_id).order_by('name')
+                self.fields['sub_category'].queryset = BookSubCategory.objects.filter(main_category_id=main_category_id)#.order_by('name')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
-            self.fields['sub_category'].queryset = self.instance.main_category.sub_category_set.order_by('name')
+            self.fields['sub_category'].queryset = self.instance.main_category.sub_category_set#.order_by('name')
 '''
 class SignupForm(UserCreationForm):
     rollNumber = forms.CharField(max_length=200, help_text="Roll Number of the student", widget=forms.TextInput(attrs={'placeholder': 'Roll Number'}))
@@ -55,9 +55,14 @@ class SignupForm1(UserCreationForm):
         model = User
         fields = ('rollNumber', 'username',  'studying', 'branch', 'persuingyear', 'email', 'password1', 'password2')
         #fields = ('username', 'email', 'password1', 'password2')
-    def clean_rollNumber(self):
+
+
+    def clean(self):
+        cleaned_data = super(SignupForm1, self).clean()
         rollnum = self.cleaned_data.get("rollNumber")
         un = self.cleaned_data.get("username")
+        em = self.cleaned_data.get("email")
+        print(em)
         print(un)
         print(rollnum)
         rnqs = StudentMainTable.objects.filter(stdid=rollnum)
@@ -66,7 +71,7 @@ class SignupForm1(UserCreationForm):
             for obj in rnqs:
                 nm = obj.name
             if nm == un:    
-                return rollnum
+                return self.cleaned_data
             else:
                 raise forms.ValidationError("User name mismatch. The specified roll number has different user name")            
         else:
