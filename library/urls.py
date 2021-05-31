@@ -9,6 +9,7 @@ urlpatterns = [
     path("load_subcats/", views.load_subCat, name="ajax_load_subcat"),
     path("signup/", views.signup_form, name="signup"),
     path("login/", views.login_page, name="login"),
-    path("logout/", views.logoutUser, name="logout")
+    path("logout/", views.logoutUser, name="logout"),
+    path('signup_ajax', views.signup_ajax, name="signup_ajax")
 ]
 

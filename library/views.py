@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from urllib.parse import urlencode
@@ -8,6 +9,7 @@ from django.contrib.auth.models import User
 from .forms import BookForm, SignupForm1
 from django.contrib import messages
 from django import forms
+import json
 # Create your views here.
 def home(request):
     #return HttpResponse("home")
@@ -128,4 +130,24 @@ def get_books(request):
 def load_subCat(request):
     main_id = request.GET.get("main_cat")
     subCats = BookSubCategory.objects.filter(main_category_id = main_id)
-    return render(request, "subCat_dropdown_list.html", {'subCats': subCats})    
+    return render(request, "subCat_dropdown_list.html", {'subCats': subCats})
+
+def signup_ajax(request):
+    rollNum = request.GET.get("roll_num")
+    std_details = StudentMainTable.objects.filter(stdid=rollNum)
+    #print(std_details)
+    reslt = {}
+    if std_details:
+        for std in std_details:
+            if std.name and std.email_id and std.degree and std.branch and std.persuing_year:
+                print(std.name)
+                reslt['name'] = std.name
+                reslt['email_id'] = std.email_id
+                reslt['degree'] = std.degree
+                reslt['branch'] = std.branch
+                reslt['persuing_year'] = std.persuing_year
+    print(reslt['name'])
+    r = JsonResponse(reslt)
+    print(r)            
+    return JsonResponse(reslt)
+

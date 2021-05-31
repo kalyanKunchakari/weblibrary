@@ -49,7 +49,7 @@ class SignupForm1(UserCreationForm):
     username = forms.CharField(max_length=200, help_text= "Name of the student", widget=forms.TextInput(attrs={'placeholder': 'Student Name'}))
     studying = forms.CharField(max_length=200, help_text="Degree of the student", widget=forms.TextInput(attrs={'placeholder': 'Degree'}))
     branch = forms.CharField(max_length=200, help_text="Branch of the student", widget=forms.TextInput(attrs={'placeholder': 'Branch'}))
-    persuingyear = forms.IntegerField(help_text="Persuing year fo the student", widget=forms.TextInput(attrs={'placeholder': 'pursuing year'}))
+    persuingyear = forms.CharField(help_text="Persuing year fo the student", widget=forms.TextInput(attrs={'placeholder': 'pursuing year'}))
     email = forms.EmailField(max_length=100, help_text="Student email", widget=forms.TextInput(attrs={'placeholder': 'Email Address'}))
     class Meta:
         model = User

@@ -9,7 +9,7 @@ class Student(models.Model):
     roll_num = models.CharField(max_length=200, null=True)
     studying = models.CharField(max_length=200, null=True)
     branch = models.CharField(max_length=200, null=True)
-    pyr = models.IntegerField(null=True)
+    pyr = models.CharField(max_length=200,null=True)
 
     def __str__(self):
         return str(self.user.username)
