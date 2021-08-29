@@ -12,6 +12,7 @@
 				<th>Studying</th>
 				<th>Branch</th>
 				<th>Pursuing Yr</th>
+				<th> Action </th>
 			</tr>
 			{% for i in st %}
 			<tr>
@@ -20,8 +21,21 @@
 				<td>{{i.studying}}</td>
 				<td>{{i.branch}}</td>
 				<td>{{i.pyr}}</td>
+				<td><a href="#">Modify/Delete</a></td>
 			</tr>
 			{% endfor %}
+		</table>
+	</div>
+	<br>
+	<div  class="col-md-7">
+		<table class="table table-sm">
+			<tr>
+			<th>Add/Delete Book</th>
+			</tr>
+			<tr>
+				<td><a href="{% url 'create_book' %}">Add Book</a></td>
+				<td><a href="#">Delete Book</a></td>
+			</tr>
 		</table>
 	</div>
 	</div>

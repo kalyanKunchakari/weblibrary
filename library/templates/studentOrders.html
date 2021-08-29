@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+{% block content %}
+<h1>Ordered Books</h1>
+{% if ordered_books %}
+<table class="table table-sm">
+    <tr>
+        <th>Books</th>
+    </tr>    
+    {% for i in ordered_books %}
+    <tr>
+        <td>{{i.book.title}}</td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <h1> No orders available </h1>
+{% endif %}
+</table>    
+{% endblock %}    

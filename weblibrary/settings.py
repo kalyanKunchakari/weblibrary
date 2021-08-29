@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'library.apps.LibraryConfig'
+    'library.apps.LibraryConfig',
+    'crispy_forms',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +119,8 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -125,4 +129,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
  ]
 
- 
+REST_FRAMEWORK = {
+    
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    
+    ]
+    
+}

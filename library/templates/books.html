@@ -1,21 +1,77 @@
 {% extends "main.html" %}
 {% block content %}
+<style>
+	.hidden {
+		display: none;
+	}
+</style>
 <body>
-	<form action="" id="bookform" data-subcat-url="{% url 'ajax_load_subcat' %}" method="POST">
-		{% csrf_token %}
-		{{form.as_p}}
-		<input type="Submit" name="Submit">
-	</form>
 	<div>
+		<table style="width: auto;" class="table table-sm table-dark">
+			<thead>
+				<tr>
+					<th scope="col" >Student Name</th>
+					<th scope="col">Roll Number</th>
+					<th scope="col">Degree</th>
+					<th scope="col">Branch</th>
+					<th scope="col">Persuing Year</th>
+				</tr>
+			</thead>
+			{% for std in std_details %}
+			<tr>
+				<td>{{std.name}}</td>
+				<td>{{std.roll_num}}</td>
+				<td>{{std.studying}}</td>
+				<td>{{std.branch}}</td>
+				<td>{{std.pyr}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	
+	{% load crispy_forms_tags %} 
+
+	
+		<form action="" id="bookform" data-subcat-url="{% url 'ajax_load_subcat' %}" method="POST">
+			{% csrf_token %}
+			<div class="row"> 
+				<div class="col-2">
+					{{form.main_category | as_crispy_field}}
+				</div>
+				<div class="col-2">
+					{{form.sub_category | as_crispy_field}}
+				</div>
+			</div>
+			<input class="btn btn-primary" type="Submit" name="Submit">
+		
+		</form>
+	
+	<div >
 		<span>
-			<table>
-	<th>books</th>
-	{% for i in fb %}
-	<tr> <td>{{i.title}} </td></tr>
-	{% endfor %}
-	</table>
+			<div >
+			{% if fb %}
+			<table class="table table-sm"> 
+				<thead>
+					<tr>
+						<th scope="col-2">books</th>
+						<th scope="col-2">Available </th>
+						<th scope="col-2">Order</th>
+					</tr>	
+				</thead>
+					{% for i in fb %}
+					<tr> <td ><a href="{{i.get_absolute_url}}">{{i.title}} </a></td>
+					 <td > {{i.book_count}} </td>
+					<td > <button class="btn btn-info" type="button" id="{{i.title}}">Order</button> </td>
+					</tr>
+					{% endfor %}
+			</table>
+			{% endif %}
+			</div>
 		</span>
-	</div>	
+	</div>
+	<div id="div" class="hidden">	
+	<button class="btn btn-secondary" type="button" >checkout</button>
+	</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
 $("#id_main_category").change(function() {
@@ -23,6 +79,7 @@ $("#id_main_category").change(function() {
 	url = $('#bookform').attr('data-subcat-url');
 	const maincat = $(this).val();
 	console.log(maincat);
+	console.log(url)
 	$.ajax({
 		url: url,
 		data: {'main_cat': maincat},
@@ -31,6 +88,35 @@ $("#id_main_category").change(function() {
 			}
 		});	
 });
+
+$('.btn-info').click(function() {
+	var id = this.id
+	var url = "{% url 'ajax_orders' %}"
+	console.log(url)
+	alert(id)
+	$.ajax({
+		url:url,
+		data: {"book_name": id},
+		success:function(data){
+			console.log("success")
+			alert(data.msg)
+			if($('#div').is(":visible"))
+			{
+				console.log("hi")
+			}
+			else{
+				
+				$('#div').toggle()
+			}
+			
+		},
+
+		error:function(data){
+			alert(data.msg)
+		}
+	})
+	
+})
 </script>
 </body>
 {% endblock %}

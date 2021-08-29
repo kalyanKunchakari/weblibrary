@@ -1,4 +1,4 @@
-#logo{
+		#logo{
 		}
 
 		body{
@@ -18,3 +18,12 @@
 		#orders-pending{
 			background-color: #7CD1C0;
 		}
+
+		.hellowuser{
+			color: white;
+		}
+
+		.hidden {
+			display: none;
+		}
+	

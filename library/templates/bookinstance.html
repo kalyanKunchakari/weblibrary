@@ -1,0 +1,10 @@
+<table>
+    <th>
+        <tr>book</tr>
+        <tr>count</tr>
+{% for i in bi %}
+    <tr>
+    <td>{{i.book.title}}</td>
+    <td>{{i.objects.filter(book__title=i.book.title).count()}}</td>
+    </tr>
+{% endfor %}    

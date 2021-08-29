@@ -1,50 +1,29 @@
 from django.http.response import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from urllib.parse import urlencode
 from django.http import HttpResponse
-from . models import Student, Book, BookMainCategory, BookSubCategory, Book, StudentMainTable
+from . models import Student, Book, BookMainCategory, BookSubCategory, Book, StudentMainTable, Order
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from .forms import BookForm, SignupForm1
+from django.contrib.auth.models import Group, User
+from django.contrib.auth.decorators import login_required
+from .forms import BookForm, SignupForm1, CreateBook
 from django.contrib import messages
 from django import forms
+from django.views import generic
+from .decorators import unauthenticated_user, allowed_user
+
 import json
 # Create your views here.
+@login_required(login_url="login")
+@allowed_user(allowed_role=['admin'])
 def home(request):
     #return HttpResponse("home")
     st = Student.objects.all()
     context = {'st':st}
     return render(request, "dashboard.html", context)
-'''
-def books(request):
-    form = BookSubCategoryForm()
-    if request.method == "POST":
-        print(request.POST)
-        qs = request.POST
-        form = BookSubCategoryForm(request.POST)
-        if form.is_valid():
-            #form.save()
-            base_url = reverse("get_books")
-            query_set = urlencode({"main_category":qs["main_category"][0], "sub_category":qs["sub_category_name"]})
-            url = '{}?{}'.format(base_url, query_set)
-            return redirect(url)
-            
-    context = {"form":form}    
-    return render(request, "books.html", context)
 
-def get_books(request):
-    main_category_id = request.GET.get("main_category")
-    sub_category = request.GET.get("sub_category")
-    mc = BookMainCategory.objects.get(id=main_category_id)
-    print(mc)
-    print(sub_category)
-    fb =   Book.objects.filter(main_category=mc).filter(sub_category__sub_category_name=sub_category)
-    print(fb)
-    context = {"fb":fb}
-    return render(request, "get_books.html", context)
-
-'''
+@unauthenticated_user
 def signup_form(request):
 
     if request.method == 'POST':
@@ -68,6 +47,8 @@ def signup_form(request):
             user.student.studying = form.cleaned_data.get('studying')
             user.student.branch = form.cleaned_data.get('branch')
             user.student.pyr = form.cleaned_data.get('persuingyear')
+            group = Group.objects.get(name="student")
+            user.groups.add(group)
             user.save()
 
             messages.success(request, "Account created successfully for "+ user.student.name)
@@ -77,7 +58,8 @@ def signup_form(request):
     else:
         form = SignupForm1()
     return render(request, "signup.html", {'form': form})       
-    
+
+@unauthenticated_user
 def login_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -94,7 +76,9 @@ def logoutUser(request):
     logout(request)
     return redirect("login")    
 
+@login_required(login_url="login")
 def books(request):
+    std_details = Student.objects.filter(name=request.user)
     form1 = BookForm()
     if request.method == "POST":
         print(request.POST)
@@ -111,22 +95,12 @@ def books(request):
             mc = BookMainCategory.objects.get(id=main_category_id)
             sc = BookSubCategory.objects.get(id=sub_category1)
             fb =   Book.objects.filter(main_category=mc).filter(sub_category__sub_category_name=sc)
-            context = {"fb":fb, "form":form1}
+            context = {"fb":fb, "form":form1, "std_details":std_details}
             return render(request, "books.html", context)
     else:       
-        context = {"form":form1}    
+        context = {"form":form1, "std_details":std_details}    
         return render(request, "books.html", context)
 
-def get_books(request):
-    form = BookForm()
-    main_category_id = request.GET.get("main_category")
-    sub_category1 = request.GET.get("sub_category")
-    mc = BookMainCategory.objects.get(id=main_category_id)
-    sc = BookSubCategory.objects.get(id=sub_category1)
-    fb =   Book.objects.filter(main_category=mc).filter(sub_category__sub_category_name=sc)
-    context = {"fb":fb, "form":form}
-    return render(request, "books.html", context)
- 
 def load_subCat(request):
     main_id = request.GET.get("main_cat")
     subCats = BookSubCategory.objects.filter(main_category_id = main_id)
@@ -150,4 +124,62 @@ def signup_ajax(request):
     r = JsonResponse(reslt)
     print(r)            
     return JsonResponse(reslt)
+
+#class BookDetailedView(generic.DetailView):
+#    model = Book
+@login_required(login_url="login")
+def book_detail_view(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    return render(request, 'book_detail.html', context={'book': book})
+
+@login_required(login_url="login")
+def book_orders(request):
+    book_name = request.GET.get("book_name")
+    print(book_name)
+    
+    std = Student.objects.get(user=request.user)
+    print(std)
+    bk = Book.objects.get(title = book_name)
+    add_item = True
+    try:
+        ordrs = std.order_set.all()
+        if ordrs:
+            for ord in ordrs:
+                if ord.book.id == bk.id:
+                    add_item = False
+                    break
+        if add_item:
+            Order.objects.create(std=std, book = bk)
+            bk.book_count = bk.book_count - 1
+            bk.save()
+        else:
+            return JsonResponse({'msg': "Maximum of 1 copy of book is allowed to order "})    
+    except Exception as e:
+        return JsonResponse({'msg':"Failed to add the order to the cart." })
+    return JsonResponse({'msg': "Order added to the cart successfully."})
+
+@login_required(login_url="login")
+def student_orders(request):
+    std = Student.objects.get(user=request.user)
+    ordered_books = std.order_set.all()
+    print(ordered_books)
+    return render(request, "studentOrders.html", context={"ordered_books": ordered_books})
+
+@login_required(login_url="login")
+@allowed_user(allowed_role=['admin'])
+def AddBook(request):
+    std_details = Student.objects.filter(name=request.user)
+    form = CreateBook()
+    if request.method == "POST":
+        print(request.POST)
+        #qs = request.POST
+        form = CreateBook(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            return JsonResponse({'msg': "Failed to add book "})
+    else:       
+        context = {"form":form, "std_details":std_details}    
+        return render(request, "create_book.html", context)
+    return JsonResponse({'msg': "Book Added successfully."})
 

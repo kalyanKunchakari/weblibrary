@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+
+{% block content %}
+<body>
+  <h1>Title: {{ book.title }}</h1>
+  <div >
+  <p><strong>Author:</strong> <a href="">{{ book.author }}</a></p> <!-- author detail link not yet defined -->
+  <p><strong>Summary:</strong> {{ book.summary }}</p>
+  <p><strong>ISBN:</strong> {{ book.isbn_num }}</p>
+</div>
+  <div>
+    {% if book.book_count > 0 %}
+      <p> <strong> Available: </strong> {{book.book_count}} </p>
+      <button class="btn btn-info" type="button" id="{{book.title}}">Order</button>
+    {% else %}
+      <p>No Books available presently</p>
+    {% endif %}  
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+  $('.btn-info').click(function() {
+    var id = this.id
+    $url = 0
+    alert(id)
+  })
+  </script>
+  </body>
+  {% endblock %}
