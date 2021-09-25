@@ -3,8 +3,8 @@ from rest_framework import response
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
-from library.models import Author, Order, Book
-from library.api.Serializer import AuthorSerializer, OrderSerializer, BookSerializer
+from library.models import Author, BookSubCategory, Order, Book, StudentMainTable, Student, BookMainCategory
+from library.api.Serializer import AuthorSerializer, OrderSerializer, BookSerializer, StudentSerializer, SubCategorySerializer
 
 @api_view(['GET',])
 @permission_classes((permissions.AllowAny,))
@@ -85,5 +85,29 @@ def api_book_create(request):
             return Response(bk_srl.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
+
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def api_student_list(request):
+    std_dts = Student.objects.all()
+    std = StudentSerializer(std_dts, many=True)
+    return Response(std.data)
+'''
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def api_main_category_list(request):
+    main_lst = BookMainCategory.objects.all()
+    main_slr = MainCategorySerializer(main_lst, many=True)
+    return Response(main_slr.data)
+'''
+@api_view(['GET'])
+@permission_classes((permissions.AllowAny,))
+def api_sub_category_list(request, mc):
+    sub_cat = BookSubCategory.objects.filter(main_category_id = mc)
+    sub_slr = SubCategorySerializer(sub_cat, many=True)
+    return Response(sub_slr.data)
+
+
+
             
                 

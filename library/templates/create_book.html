@@ -44,7 +44,7 @@
 				</div>
 			</div>
 			
-			<button class="btn btn-info" type="button" id={{form.title}}>Add</button>
+			<input class="btn btn-info" type="submit" id="newBook" value="Add Book"> 
 
 		</div>
 			</div>
@@ -58,15 +58,25 @@
 <script>
 $("#id_main_category").change(function() {
 	console.log("hi welcome")
-	url = $('#createbookform').attr('data-subcat-url');
+	//url = $('#createbookform').attr('data-subcat-url');
 	const maincat = $(this).val();
+	url = "http://127.0.0.1:8000/api/library/subcat/"+maincat
+	
 	console.log(maincat);
 	console.log(url)
 	$.ajax({
 		url: url,
-		data: {'main_cat': maincat},
+		dataType: 'JSON',
 		success:function(data){
-			$('#id_sub_category').html(data);
+			//$('#id_sub_category').html(data);
+			$("#id_sub_category").empty()
+			var inrow = $("<option>-------</option>")
+			$("id_sub_category").append(inrow)
+			for(var i=0; i<data.length;i++)
+				{
+					var row = $("<option>"+data[i].sub_category_name+"</option>");
+					$("#id_sub_category").append(row);
+				}
 			}
 		});	
 });

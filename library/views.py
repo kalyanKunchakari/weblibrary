@@ -7,7 +7,7 @@ from . models import Student, Book, BookMainCategory, BookSubCategory, Book, Stu
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
-from .forms import BookForm, SignupForm1, CreateBook
+from .forms import BookForm, SignupForm1, CreateBook, DeleteBook
 from django.contrib import messages
 from django import forms
 from django.views import generic
@@ -170,9 +170,10 @@ def student_orders(request):
 def AddBook(request):
     std_details = Student.objects.filter(name=request.user)
     form = CreateBook()
+    print(request.method)
+        
     if request.method == "POST":
-        print(request.POST)
-        #qs = request.POST
+        
         form = CreateBook(request.POST)
         if form.is_valid():
             form.save()
@@ -182,4 +183,26 @@ def AddBook(request):
         context = {"form":form, "std_details":std_details}    
         return render(request, "create_book.html", context)
     return JsonResponse({'msg': "Book Added successfully."})
+
+@login_required(login_url="login")
+@allowed_user(allowed_role=['admin'])
+def RemoveBook(request):
+    form = DeleteBook()
+    if request.method == "POST":
+        qs = request.POST
+        form = DeleteBook(request.POST)
+        if form.is_valid():
+            title = qs['title']
+            bk = Book.objects.get(title=title)
+            bk.delete()
+            
+        else:
+            return HttpResponse("Failed to remove book ")
+    else:       
+        context = {"form":form}    
+        return render(request, "delete_book.html", context)
+    return HttpResponse("Book Deleted successfully.")
+
+        
+
 

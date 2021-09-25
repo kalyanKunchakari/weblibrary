@@ -73,7 +73,12 @@ class CreateBook(ModelForm):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
             self.fields['sub_category'].queryset = self.instance.main_category.sub_category_set#.order_by('name') 
-            
+
+class DeleteBook(ModelForm):
+    title = forms.CharField(max_length=200, help_text="Book Name", widget=forms.TextInput(attrs={'placeholder': 'Enter Book Name'}))
+    class Meta:
+        model = Book
+        fields = {'title'}
         
         
         

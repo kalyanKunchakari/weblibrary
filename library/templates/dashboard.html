@@ -5,25 +5,27 @@
 	<h5> Student Details : </h5>
 	<hr>
 	<div class="card card-body" id="UserTable">
-		<table class="table table-sm">
+		<table class="table table-sm" id="std_details">
 			<tr>
 				<th>Name</th>
 				<th>Roll Number</th>
 				<th>Studying</th>
 				<th>Branch</th>
 				<th>Pursuing Yr</th>
-				<th> Action </th>
+				<th>Ordered Books</th>
+				<!--<th> Action </th>-->
 			</tr>
-			{% for i in st %}
+			<!--{% for i in st %}
 			<tr>
 				<td> {{i.name}} </td>
 				<td>{{i.roll_num}}</td>
 				<td>{{i.studying}}</td>
 				<td>{{i.branch}}</td>
 				<td>{{i.pyr}}</td>
-				<td><a href="#">Modify/Delete</a></td>
+				<td>{{i.order_set.all.count}}</td>
+				<td><button><a href="#">Modify</a> / <a href="#">Delete</a></button></td>
 			</tr>
-			{% endfor %}
+			{% endfor %}-->
 		</table>
 	</div>
 	<br>
@@ -34,10 +36,29 @@
 			</tr>
 			<tr>
 				<td><a href="{% url 'create_book' %}">Add Book</a></td>
-				<td><a href="#">Delete Book</a></td>
+				<td><a href="{% url 'delete_book' %}">Delete Book</a></td>
 			</tr>
 		</table>
 	</div>
 	</div>
 </div>	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+	$(document).ready(function()
+	{
+		$.ajax({
+			url: "http://127.0.0.1:8000/api/library/std_details/",
+			dataType: 'JSON',
+			success:function(data){
+				
+				for(var i=0; i<data.length;i++)
+				{
+					var row = $("<tr><td>"+data[i].name+"</td><td>"+data[i].roll_num+"</td><td>"+data[i].studying+"</td><td>"+data[i].branch+"</td><td>"+data[i].pyr+"</td><td>"+data[i].books_ordered+"</td></tr>");
+					$("#std_details").append(row);
+					
+				}
+			}
+		})
+	})
+</script>
 {% endblock %}

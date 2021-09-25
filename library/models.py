@@ -15,13 +15,13 @@ class Student(models.Model):
 
     def __str__(self):
         return str(self.user.username)
-    '''
+    
     @receiver(post_save, sender=User)
     def create_student(sender, instance, created, **kwargs):
         if created:
             Student.objects.create(user=instance)
-        instance.student.save()        
-    '''
+        instance.student.save()     
+    
     
 
 class Author(models.Model):
@@ -80,4 +80,4 @@ class Order(models.Model):
     date_created = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return str(self.order_id) 
+        return str(self.order_id)

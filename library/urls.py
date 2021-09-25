@@ -14,6 +14,7 @@ urlpatterns = [
     path('book/<int:pk>', views.book_detail_view, name="book-detail"),
     path('orders/', views.book_orders, name="ajax_orders"),
     path('student_orders/', views.student_orders, name="student_orders"),
-    path('create_book/', views.AddBook, name="create_book")
+    path('create_book/', views.AddBook, name="create_book"),
+    path('delete_book/', views.RemoveBook, name="delete_book")
 ]
 
